@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="80" height="300" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="grass" tilewidth="32" tileheight="32">
+  <image source="grass.png" width="160" height="128"/>
+ </tileset>
+ <tileset firstgid="21" name="signs" tilewidth="32" tileheight="32">
+  <image source="signs.png" width="544" height="384"/>
+ </tileset>
+ <layer name="Background" width="80" height="300">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3OwQ2CQABEUYqkBQsCxAIEtQBFLI9pgITEw2bJe8lP5jhNAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAeXerTkK5pTLeij+pyT1Oa0yM906voo7q80yct6ZvW9Cv6qD7tzuaYy86Gf2xXe9z2AHcBAA==
+  </data>
+ </layer>
+ <layer name="Ground layer" width="80" height="300">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3b20rDQABF0aKiKFq8/P+/GsFnabrNtJ2sBfPcuJHRU8jxwLmOv4fz6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo19R+e2+vX6Nfo1+jX1P7vS/nfsV5KA97hfz/0ujX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo1+jX6Nfo18za73nQ58zab9TPdOl+d4d174+cej4HPf+l+906/Rr9mq36jfr7d2lb9dvL7/RW/da+l3mr72+6/xr9Gv2aWfvZv439a//ugX6Nfo3929i/jf3buP8a/Rr9mln72b+N/Wv/7oF+jX6N/dvYv43927j/Gv0a/ZpZ+9m/jf1r/+6Bfo1+jf3b2L+N/du4/xr9Gv2aWfvZv439a//ugX6Nfo3929i/jf3buP8a/Rr9mln72b/NXvbv43KeNjhvg57/p93XoM/6y+s/n5H9roF+zS332+o7uFPOx0bn3O//1rZ4Wc43KiB+bAB3AQA=
+  </data>
+ </layer>
+ <layer name="Foreground" width="80" height="300" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3QsQkAIBAEQSMN1MD+m/VLEOQ1mYEt4K4UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMhVo5bQfDniox6NhPznvxP+u7OSemkDjC8F7AB3AQA=
+  </data>
+ </layer>
+</map>

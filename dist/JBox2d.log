@@ -1,0 +1,10 @@
+2011-06-25 00:20:19,429 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-06-25 00:47:52,139 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-06-25 09:06:18,771 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-06-25 09:08:54,335 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-06-29 16:45:08,128 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-07-10 22:06:32,340 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-07-10 22:09:53,571 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-08-21 15:27:42,082 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-08-21 19:16:45,117 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8
+2011-11-14 16:53:24,323 [main] DEBUG org.jbox2d.dynamics.contacts.TOISolver.initialize(TOISolver.java:83) - toi constraints expanded to: 8

@@ -1,0 +1,186 @@
+package com.googlecode.tda367.denty.core.level;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jbox2d.collision.AABB;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.World;
+import org.newdawn.slick.tiled.TiledMap;
+
+import com.googlecode.tda367.denty.core.data.GameData;
+import com.googlecode.tda367.denty.core.dynamicbody.Block;
+import com.googlecode.tda367.denty.core.dynamicbody.CollisionListener;
+import com.googlecode.tda367.denty.core.dynamicbody.Denty;
+import com.googlecode.tda367.denty.core.dynamicbody.DynamicBody;
+import com.googlecode.tda367.denty.core.dynamicbody.Goal;
+import com.googlecode.tda367.denty.core.dynamicbody.MoveableBody;
+import com.googlecode.tda367.denty.core.dynamicbody.ThrowableBlock;
+import com.googlecode.tda367.denty.util.DentyQueryCallback;
+import com.googlecode.tda367.denty.util.SortingUtil;
+/**
+ * Provides all common logic for the levels.
+ *
+ */
+public abstract class AbstractLevel implements Level {
+	
+	
+	private World world;
+	private Denty denty;
+	private List<DynamicBody> bodyList;
+	private GameData gameData;
+	
+	public AbstractLevel() {
+		this.gameData = GameData.getInstance();
+		this.initPhysics();
+		this.bodyList = new ArrayList<DynamicBody>();
+		this.addGoal();
+		this.addDenty();
+		gameData.setBlocks(this.getBlocksAvailableFromStart());
+		gameData.setMaxBlocks(this.getMaxAvailableBlocks());
+	}
+
+	private void addDenty() {
+		this.denty = new Denty(this.getDentyStartX(), this.getDentyStartY(), this.world);
+		this.addDynamicBody(this.denty);
+	}
+	
+	private void addGoal() {
+		Goal goal = new Goal(this.getGoalX(), this.getGoalY(), this.world);
+	    this.addDynamicBody(goal);
+	}
+
+	@Override
+	public World getWorld() {
+		return this.world;
+	}
+	
+	@Override
+	public MoveableBody getDenty() {
+		return this.denty;
+	}
+	
+	protected void initPhysics() {
+		this.world = new World(new Vec2(0, 50f), true);
+		this.world.setContactListener(CollisionListener.getInstance());        
+	}
+
+	// Testing not possible because of TiledMap.
+	public void parseTiledMap(TiledMap map) {
+		BodyDef staticBodyDef = new BodyDef();
+		staticBodyDef.fixedRotation = true;
+		staticBodyDef.position = new Vec2(0, 0);
+		staticBodyDef.type = BodyType.STATIC;
+		Body tileBody = this.world.createBody(staticBodyDef);
+		for(int x = 0; x < map.getWidth(); x++) {
+			for(int y = 0; y < map.getHeight(); y++) {
+				if(map.getTileId(x, y, 0) != 0) {
+					PolygonShape ps = new PolygonShape();
+					ps.setAsBox(0.5f, 0.5f, new Vec2(x + 0.5f, y + 0.5f), 0);
+					tileBody.createFixture(ps, 0);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public List<DynamicBody> getDynamicBodies() {
+		return this.bodyList;
+	}
+
+	public void addDynamicBody(DynamicBody body) {
+		bodyList.add(body);
+	}
+	
+	public void addDynamicBodies(Collection<DynamicBody> bodies) {
+		bodyList.addAll(bodies);
+	}
+	
+	@Override
+	public void placeBlock(int x, int y) {
+		if (canAddBlock()){
+			DynamicBody block = new Block(this.world, x, y);
+			this.bodyList.add(block);
+			this.decNoOfAvailableBlocks();
+		}
+	}
+	
+	private void decNoOfAvailableBlocks(){
+		gameData.setBlocks(gameData.getBlocks() -1);
+	}
+	
+	@Override
+	public void restart(){
+		this.addDenty();
+		GameData gameData = GameData.getInstance();
+		gameData.setLives(gameData.getLives() - 1);
+		if (gameData.getLives() < 0){
+			gameData.fireGameReset();
+		}
+	}
+	@Override
+	public boolean canReleaseBody(float x1, float y1, float x2, float y2) {
+		DentyQueryCallback callback = this.queryCallback(x1, y1, x2, y2);
+		return callback.areaContains(Block.class);
+	}
+
+	@Override
+	public void releaseBodies(float x1, float y1, float x2, float y2) {
+		DentyQueryCallback callback = this.queryCallback(x1, y1, x2, y2);
+		List<Block> list = SortingUtil.getListOf(callback.getDynamicBodies(), Block.class);
+		for (Block block : list){
+			Vec2 pos = new Vec2(block.getPosition());
+			block.setAlive(false);
+			this.newThrowableBlock(pos.x, pos.y);
+		}
+		
+	}
+	@Override
+	public void update() {
+		if (denty.getPosition().x<this.getCamera().getCameraX()) {
+			denty.setAlive(false);
+		}
+		if (denty.getPosition().x>this.getCamera().getCameraX()+this.getCamera().getCameraXOffset()) {
+			this.denty.setAlive(false);
+		}
+		this.world.step(1.0f/60.0f, 10, 10);
+	}
+
+	@Override
+	public void throwNewBlock(float x, float y, Vec2 force) {
+		if (canAddBlock()){
+			MoveableBody block = newThrowableBlock(x,y);
+			block.applyForce(force);
+			this.decNoOfAvailableBlocks();
+		}
+	}
+	
+	protected ThrowableBlock newThrowableBlock(float x, float y) {
+		ThrowableBlock block = new ThrowableBlock(this.world, x, y);
+		this.bodyList.add(block);
+		return block;
+	}
+	
+	private DentyQueryCallback queryCallback(float x1, float y1, float x2, float y2){
+		AABB box = new AABB(new Vec2(x1,y1), new Vec2(x2, y2));
+		DentyQueryCallback callback = new DentyQueryCallback();
+		world.queryAABB(callback, box);
+		return callback;
+	}
+
+	@Override
+	public boolean isAreaFree(float x1, float y1, float x2, float y2) {
+		DentyQueryCallback callback = this.queryCallback(x1, y1, x2, y2);
+		return callback.isAreaFree();
+	}
+	
+	@Override
+	public boolean canAddBlock(){
+		return gameData.getBlocks() > 0;
+	}
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="126" height="50" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="grass" tilewidth="32" tileheight="32">
+  <image source="grass.png" width="160" height="128"/>
+ </tileset>
+ <tileset firstgid="21" name="cloud" tilewidth="32" tileheight="32">
+  <image source="cloud.png" width="256" height="192"/>
+ </tileset>
+ <tileset firstgid="69" name="tree" tilewidth="32" tileheight="32">
+  <image source="tree.png" width="480" height="360"/>
+ </tileset>
+ <layer name="Background" width="126" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3ZR04EMRBA0bkEOecch5zTinD/6/A3SDCLnqYxuGz+k74QQYNVos1I1et9NUKjNEbjNEGTNEXTPf1E5NnO0CzN0Twt0CIt0XK+Y1Uh8mxXaJXWaJ02aJO2aDvjuWoQebY7tEt7tE8HdEh9Osp4rhpEnu0xndApndE5XdAlXWU8Vw0iz/aabuiW7uieHuiRnvIdqwrOVpIkSZIkSdJvi7xfblLquaOIvF9uUuq5o4i8X25S6rmjyLFfTnFHR96Ld/HX/7dy7JdT3NGR9+JdtJlJyr+NHPvlFHd0bXvxNjMp/T1NbXd0Cm1mUvp7mtru6BTazKT056W2OzqFNjPxefmffF4kSZIkSZIkSZIkSZIkSZLq90wvnz6+0luHzwdf7+Prg99v87uHnXXYz0nSd70DDmaF2XBiAAA=
+  </data>
+ </layer>
+ <layer name="Ground layer" width="126" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2c227DIAxA0bp7N+2i/f+3jkh7HBSDbQI+R/JLhdwkpwFDSFMCAAAAAAAAgNW5y3H5i/vJxwIAAGDFY44npXh2Pnbo55rjI8fXYDzkeHc+dujn8K7hq5Sn1p/QP8zD2nupP6F/mMvh5Se134+l+/c1lb1LPgcfPpNsvK7VA9+F9nhfBy1feF8LvMdE6qtn3JfUFeCD1Lt03JfWFeBDj3fL+SD4gPeY9Hi3XAcAH6TerdcBwAfmcTHBe0zwHhO8xwTvMdnde8/+sgjrx7t7l+4vi7J+HMG7xnnsBt7H2q8K3sfarwrex9qfHev9ElrPcbSZ5b11HmF9Daz3S2g9x9FmlveWeYTHNfDYP3/G/nSm91t5PK4B3m3aj+Tx8l4aZyXRUw9Y7Lt4aWwX3XtpnO0JST0gzSM5n0u6/Z8W0b2vSK0mbgXv61F711KSA+9rUashR3NotR/Jg/f/Ocbw0juYreB9H/Aek528a8ytzxgW689XwfdL1wm8vb9tGha/58PlL78zDA1wYgAA
+  </data>
+ </layer>
+ <layer name="Foreground" width="126" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgytwMhRXBiAAA=
+  </data>
+ </layer>
+</map>

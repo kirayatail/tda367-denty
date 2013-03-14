@@ -1,0 +1,86 @@
+package com.googlecode.tda367.denty.core.dynamicbody;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.World;
+
+import com.googlecode.tda367.denty.constants.Hit;
+import com.googlecode.tda367.denty.core.data.GameData;
+import com.googlecode.tda367.denty.util.PhysicalBodiesUtil;
+
+/**
+ * Body that fires "level finished" when denty collides with it.
+ *
+ */
+public class Goal implements DynamicBody {
+	private InnerBody body;
+	private boolean levelCleared;
+	
+	public Goal(float x, float y, World physicsWorld) {
+		Body physicalBody = this.createPhysicalRepresentation(physicsWorld, new Vec2(x,y));
+		this.body = new InnerBody(physicalBody);
+	    this.levelCleared=false;
+	}
+	
+	private Body createPhysicalRepresentation(World world, Vec2 position){
+		BodyDef bodyDef = PhysicalBodiesUtil.createBodyDef(new Vec2(position.x + 0.5f, position.y + 0.5f), BodyType.STATIC, this);
+		PolygonShape shape = PhysicalBodiesUtil.createBoxShape(2f, 4f);
+		Body body = PhysicalBodiesUtil.createBody(world, bodyDef, shape, 0);
+		return body;
+	}
+
+	@Override
+	public Vec2 getPosition(){
+		return new Vec2(this.body.getPosition());
+	}
+	@Override
+	public float getRotation() {
+		return this.body.getRotation();
+	}
+
+	@Override
+	public void beginContact(Fixture hitFixture, Collection<Hit> hitConstants) {
+		if(hitConstants.contains(Hit.DENTY) && !levelCleared) {
+			this.destroy();
+			this.levelCleared=true;
+			GameData.getInstance().fireLevelFinished();
+		}
+	}
+
+	@Override
+	public Collection<Hit> getHitConstants(Fixture fixture) {
+		return null;
+	}
+
+	@Override
+	public void destroy() {
+		this.body.destroy();
+	}
+
+	@Override
+	public boolean isAlive() {
+		return this.body.isAlive();
+	}
+
+	@Override
+	public String getImagePath() {
+		return "res/img/goal.png";
+	}
+
+	@Override
+	public void endContact(Fixture hitFixture, Collection<Hit> hitConstants) {
+		
+	}
+	
+	public void setAlive(boolean alive) {
+		body.setAlive(alive);
+	}
+}

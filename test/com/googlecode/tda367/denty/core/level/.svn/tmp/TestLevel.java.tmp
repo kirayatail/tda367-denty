@@ -1,0 +1,84 @@
+package com.googlecode.tda367.denty.core.level;
+
+import java.awt.Dimension;
+import java.awt.Point;
+
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+
+import com.googlecode.tda367.denty.core.camera.Camera;
+import com.googlecode.tda367.denty.core.camera.MovingCamera;
+
+/**
+ * This class is necessary for testing since the other levels require that the Slick framework
+ * because of a dependency on TileMap. This class will make it possible to test AbstractLevel where
+ * the common level logic resides.
+ */
+public class TestLevel extends AbstractLevel {
+
+	private Camera camera;
+
+	public TestLevel() {
+		super();
+		Dimension dimension = this.getDimension();
+		this.camera = new MovingCamera(dimension.width, dimension.height, dimension.width, dimension.height);
+		this.createWorld();
+	}
+
+	private void createWorld() {
+		BodyDef staticBodyDef = new BodyDef();
+		staticBodyDef.fixedRotation = true;
+		staticBodyDef.position = new Vec2(50, 20.5f);
+		staticBodyDef.type = BodyType.STATIC;
+		Body tileBody = this.getWorld().createBody(staticBodyDef);
+		PolygonShape ps = new PolygonShape();
+		ps.setAsBox(50, 0.5f);
+		tileBody.createFixture(ps, 0);
+	}
+
+	@Override
+	public String getTiledMapPath() {
+		// Cannot use TileMaps without running OpenGL-engine.
+		return null;
+	}
+
+	@Override
+	public Camera getCamera() {
+		return this.camera;
+	}
+
+	@Override
+	public Dimension getDimension(){
+		return new Dimension(100, 100);
+	}
+
+	@Override
+	public Point getDentyStartPosition(){
+		return new Point(50, 10);
+	}
+
+	@Override
+	public Point getGoalPosition(){
+		return new Point(20, 10);
+	}
+
+	@Override
+	public int getMaxAvailableBlocks() {
+		return 10;
+	}
+
+	@Override
+	public int getBlocksAvailableFromStart() {
+		return 5;
+	}
+	
+	
+
+	@Override
+	public String getName() {
+		return "TEST LEVEL";
+	}
+}

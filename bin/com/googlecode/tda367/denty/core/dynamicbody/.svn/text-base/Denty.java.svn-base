@@ -1,0 +1,196 @@
+package com.googlecode.tda367.denty.core.dynamicbody;
+
+import static com.googlecode.tda367.denty.constants.DynamicConstant.JUMP_FORCE;
+import static com.googlecode.tda367.denty.constants.DynamicConstant.VELOCITY_H_INC;
+import static com.googlecode.tda367.denty.constants.DynamicConstant.VELOCITY_H_MAX;
+import static com.googlecode.tda367.denty.constants.StateConstant.MOVING_LEFT;
+import static com.googlecode.tda367.denty.constants.StateConstant.MOVING_RIGHT;
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
+
+import com.googlecode.tda367.denty.constants.Constants;
+import com.googlecode.tda367.denty.constants.DynamicConstant;
+import com.googlecode.tda367.denty.constants.Hit;
+import com.googlecode.tda367.denty.constants.StateConstant;
+import com.googlecode.tda367.denty.core.data.GameData;
+import com.googlecode.tda367.denty.util.PhysicalBodiesUtil;
+
+/**
+ * Main character and controlled by the keyboard.
+ * 
+ * Denty can move horizontally and jump on (most) enemies. He can also collect
+ * stray blocks which can be used later by the Mouse player.
+ * 
+ */
+public class Denty implements MoveableBody {
+	private InnerBody body;
+	Fixture dentyBottomFixture;
+
+	public Denty(float x, float y, World physicsWorld) {
+		Body physicalBody = this.createPhysicalRepresentation(physicsWorld,
+				new Vec2(x, y));
+		this.body = new InnerBody(physicalBody, Constants.DENTY_MAX_HP);
+		GameData.getInstance().setHP(Constants.DENTY_MAX_HP);
+		this.defineConstants();
+	}
+
+	private Body createPhysicalRepresentation(World world, Vec2 position) {
+		BodyDef bodyDef = PhysicalBodiesUtil.createBodyDef(position,
+				BodyType.DYNAMIC, this, true, 2);
+		Body body = world.createBody(bodyDef);
+		float density = 0.5f;
+		this.dentyBottomFixture = body.createFixture(this
+				.createBottomShape(density));
+		body.createFixture(this.createMainShape(density));
+		return body;
+	}
+
+	private FixtureDef createMainShape(float density) {
+		Vec2[] vertices = { new Vec2(-0.48f, 0.7f), new Vec2(-0.48f, -0.7f),
+				new Vec2(-0.3f, -0.98f), new Vec2(0.3f, -0.98f),
+				new Vec2(0.48f, -0.7f), new Vec2(0.48f, 0.7f) };
+		PolygonShape mainShape = PhysicalBodiesUtil
+				.createPolygonShape(vertices);
+		FixtureDef mainFixture = PhysicalBodiesUtil.createFixtureDef(mainShape,
+				density, 0);
+		mainFixture.friction = 0;
+		return mainFixture;
+	}
+
+	private FixtureDef createBottomShape(float density) {
+		Vec2[] vertices = { new Vec2(0.46f, 0.7f), new Vec2(0.3f, 0.98f),
+				new Vec2(-0.3f, 0.98f), new Vec2(-0.46f, 0.7f) };
+		PolygonShape dentyBottom = PhysicalBodiesUtil
+				.createPolygonShape(vertices);
+		FixtureDef bottomFixture = PhysicalBodiesUtil.createFixtureDef(
+				dentyBottom, density, 0);
+		bottomFixture.friction = 0.5f;
+		return bottomFixture;
+	}
+
+	@Override
+	public Vec2 getPosition() {
+		return new Vec2(this.body.getPosition());
+	}
+
+	@Override
+	public float getRotation() {
+		return this.body.getRotation();
+	}
+
+	@Override
+	public Vec2 getLinearVelocity() {
+		return new Vec2(this.body.getLinearVelocity());
+	}
+
+	@Override
+	public void applyForce(Vec2 force) {
+		this.body.applyForce(force);
+	}
+
+	@Override
+	public void applyVelocity(Vec2 velocity) {
+		this.body.applyVelocity(velocity);
+	}
+
+	@Override
+	public float getConstant(DynamicConstant dc) {
+		return this.body.getConstant(dc);
+	}
+
+	private void defineConstants() {
+		this.body.addDynamicConstant(VELOCITY_H_MAX, 10);
+		this.body.addDynamicConstant(VELOCITY_H_INC, 1);
+		this.body.addDynamicConstant(JUMP_FORCE, -1500);
+
+		this.body.addAllowedState(MOVING_LEFT);
+		this.body.addAllowedState(MOVING_RIGHT);
+	}
+
+	@Override
+	public boolean getState(StateConstant sc) {
+		return body.getState(sc);
+	}
+
+	@Override
+	public void setState(StateConstant sc, boolean b) {
+		this.body.setState(sc, b);
+	}
+
+	@Override
+	public void beginContact(Fixture hitFixture, Collection<Hit> hitConstants) {
+		if ((!hitFixture.equals(dentyBottomFixture) && hitConstants
+				.contains(Hit.NORMAL_DMG))
+				|| hitConstants.contains(Hit.PIERCING_DMG)) {
+			this.body.changeHP(-25);
+		}
+		GameData.getInstance().setHP(this.body.getHP());
+	}
+
+	@Override
+	public Collection<Hit> getHitConstants(Fixture fixture) {
+		List<Hit> hitConstants = new ArrayList<Hit>();
+		hitConstants.add(Hit.DENTY);
+		if (fixture == this.dentyBottomFixture) {
+			hitConstants.add(Hit.NORMAL_DMG);
+		}
+		return hitConstants;
+	}
+
+	@Override
+	public void destroy() {
+		GameData gd = GameData.getInstance();
+		gd.setHP(0);
+		gd.fireDentyKilled();
+		this.body.destroy();
+	}
+
+	@Override
+	public boolean isAlive() {
+		return body.isAlive();
+	}
+
+	public void setRotation(float rad) {
+		body.setRotation(rad);
+	}
+
+	@Override
+	public String getImagePath() {
+		return "res/img/denty.png";
+	}
+
+	@Override
+	public void endContact(Fixture hitFixture, Collection<Hit> hitConstants) {
+
+	}
+
+	public void setAlive(boolean alive) {
+		body.setAlive(alive);
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(1, 2);
+	}
+
+	int getHP() {
+		return body.getHP();
+	}
+
+	void setHP(int i) {
+		body.changeHP(i - body.getHP());
+	}
+
+}

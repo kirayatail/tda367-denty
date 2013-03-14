@@ -1,0 +1,246 @@
+package com.googlecode.tda367.denty.ctrl;
+
+<<<<<<< .mine
+import java.util.List;
+
+import org.jbox2d.common.Vec2;
+=======
+import java.util.ArrayList;
+
+import org.jbox2d.common.Vec2;
+>>>>>>> .r298
+import org.jbox2d.dynamics.World;
+import org.junit.*;
+
+<<<<<<< .mine
+import com.googlecode.tda367.denty.constants.DynamicConstant;
+import com.googlecode.tda367.denty.constants.StateConstant;
+import com.googlecode.tda367.denty.core.dynamicbody.*;
+=======
+import com.googlecode.tda367.denty.constants.StateConstant;
+import com.googlecode.tda367.denty.core.dynamicbody.BouncingEnemy;
+import com.googlecode.tda367.denty.core.dynamicbody.DynamicBody;
+import com.googlecode.tda367.denty.core.dynamicbody.SimpleEnemy;
+import com.googlecode.tda367.denty.core.dynamicbody.SpikeyEnemy;
+import com.googlecode.tda367.denty.core.level.Level;
+>>>>>>> .r298
+import com.googlecode.tda367.denty.core.level.TestLevel;
+public class TestAutoMoveController {
+	private TestLevel level;
+	private World world;
+<<<<<<< .mine
+	private List<DynamicBody> bodyList;
+=======
+	private BouncingEnemy bouncingEnemy;
+	private SimpleEnemy simpleEnemy;
+	private SpikeyEnemy spikeyEnemy;
+>>>>>>> .r298
+	
+	@Before
+	public void init(){
+		this.level = new TestLevel();
+		this.world = level.getWorld();
+<<<<<<< .mine
+		this.bodyList = level.getDynamicBodies();	
+	}
+	
+	@After
+	public void cleanup(){
+		for(DynamicBody db : bodyList){
+			db.setAlive(false);
+		}
+		RecycleController.update(bodyList, 100, 100);
+	}
+	
+	@Test
+	public void testMoveWithBounds(){
+		SimpleEnemy enemy = new SimpleEnemy(15,19, world);
+		level.addDynamicBody(enemy);
+		testSettingBounds(enemy); // enemy returns with 10 - 20
+=======
+		this.bouncingEnemy = new BouncingEnemy(60, 5, world);
+		this.simpleEnemy = new SimpleEnemy(51, 5, world);
+		this.simpleEnemy.setXBounds(52, 58);
+		this.simpleEnemy.setState(StateConstant.MOVING_LEFT, true);
+		this.spikeyEnemy = new SpikeyEnemy(65, 5, world);
+	}
+	
+	@Test
+	public void testModifyStates(){
+		ArrayList<DynamicBody> testList = new ArrayList<DynamicBody>();
+		Vec2 dummyPos = new Vec2(0, 0);
+		testList.add(simpleEnemy);
+		AutoMoveController.update(testList, dummyPos);
+		Assert.assertTrue(simpleEnemy.getState(StateConstant.MOVING_RIGHT));
+		Assert.assertFalse(simpleEnemy.getState(StateConstant.MOVING_LEFT));
+		simpleEnemy.destroy();
+		testList.clear();
+>>>>>>> .r298
+		
+<<<<<<< .mine
+		enemy.setState(StateConstant.MOVING_LEFT, true);
+=======
+		simpleEnemy = new SimpleEnemy(59, 5, world);
+		simpleEnemy.setXBounds(52, 58);
+		simpleEnemy.setState(StateConstant.MOVING_RIGHT, true);
+		testList.add(simpleEnemy);
+		AutoMoveController.update(testList, dummyPos);
+		Assert.assertTrue(simpleEnemy.getState(StateConstant.MOVING_LEFT));
+		Assert.assertFalse(simpleEnemy.getState(StateConstant.MOVING_RIGHT));
+		simpleEnemy.destroy();
+		testList.clear();
+		simpleEnemy = new SimpleEnemy(55, 5, world);
+>>>>>>> .r298
+		
+<<<<<<< .mine
+		while(enemy.getPosition().x > 10){
+			AutoMoveController.update(bodyList, new Vec2(50,50));
+			level.update();
+		}
+		AutoMoveController.update(bodyList, new Vec2(50,50));
+		level.update();
+		
+		Assert.assertTrue(enemy.getState(StateConstant.MOVING_RIGHT));
+		
+		while(enemy.getPosition().x < 20){
+			AutoMoveController.update(bodyList, new Vec2(50,50));
+			level.update();
+		}
+		AutoMoveController.update(bodyList, new Vec2(50,50));
+		level.update();
+		
+		Assert.assertTrue(enemy.getState(StateConstant.MOVING_LEFT));
+=======
+		spikeyEnemy.setState(StateConstant.MOVING_LEFT, true);
+		spikeyEnemy.setState(StateConstant.CONTACT_LEFT, true);
+		testList.add(spikeyEnemy);
+		AutoMoveController.update(testList, dummyPos);
+		Assert.assertTrue(spikeyEnemy.getState(StateConstant.MOVING_RIGHT));
+		Assert.assertFalse(spikeyEnemy.getState(StateConstant.MOVING_LEFT));
+		testList.clear();
+		
+		spikeyEnemy.setState(StateConstant.MOVING_RIGHT, true);
+		spikeyEnemy.setState(StateConstant.CONTACT_RIGHT, true);
+		testList.add(spikeyEnemy);
+		AutoMoveController.update(testList, dummyPos);
+		Assert.assertTrue(spikeyEnemy.getState(StateConstant.MOVING_LEFT));
+		Assert.assertFalse(spikeyEnemy.getState(StateConstant.MOVING_RIGHT));
+		testList.clear();
+>>>>>>> .r298
+	}
+<<<<<<< .mine
+
+	private void testSettingBounds(SimpleEnemy enemy) {
+		enemy.setXBounds(30, 5);	// Test wrong direction
+		Assert.assertTrue(enemy.getConstant(DynamicConstant.BOUNDS_EAST) == 30);
+		Assert.assertTrue(enemy.getConstant(DynamicConstant.BOUNDS_WEST) == 5);
+				
+		enemy.setXBounds(10, 20);
+		Assert.assertTrue(enemy.getConstant(DynamicConstant.BOUNDS_EAST) == 20);
+		Assert.assertTrue(enemy.getConstant(DynamicConstant.BOUNDS_WEST) == 10);
+		
+	}
+	
+	@Test
+	public void testContactModify(){
+		TestBody body = new TestBody();		// Dummy testBody instead of live enemy - 
+		level.addDynamicBody(body);			// skip running through physical collisions.
+		
+		body.addAllowedState(StateConstant.CONTACT_LEFT);
+		body.addAllowedState(StateConstant.CONTACT_RIGHT);
+		body.addAllowedState(StateConstant.MOVING_LEFT);
+		body.addAllowedState(StateConstant.MOVING_RIGHT);
+		body.addAllowedState(StateConstant.AUTO_MOVE);
+		body.addDynamicConstant(DynamicConstant.BOUNDS_EAST, 0);
+		body.addDynamicConstant(DynamicConstant.BOUNDS_WEST, 100);
+		body.setState(StateConstant.AUTO_MOVE, true);
+		body.setState(StateConstant.MOVING_LEFT, true); // "walking eastwards"
+		
+		body.setState(StateConstant.CONTACT_LEFT, true);
+		
+		AutoMoveController.update(bodyList, new Vec2(50,50));
+		
+		Assert.assertTrue(body.getState(StateConstant.MOVING_RIGHT));
+		
+		body.setState(StateConstant.CONTACT_LEFT, false);
+		body.setState(StateConstant.CONTACT_RIGHT, true);
+		
+		AutoMoveController.update(bodyList, new Vec2(50,50));
+		
+		Assert.assertTrue(body.getState(StateConstant.MOVING_LEFT));
+		
+	}
+	
+	@Test
+	public void testFollowDenty(){
+		BouncingEnemy enemy = new BouncingEnemy(15,17, world);
+		level.addDynamicBody(enemy);
+		Vec2 dentyPos = new Vec2(10,20);
+		
+		AutoMoveController.update(bodyList, dentyPos);
+		level.update();
+		Assert.assertTrue(enemy.getPosition().x < 15);
+		
+		
+		dentyPos.set(50,20);	// Far away, stabilize enemy
+		for(int i=0; i<30;i++){
+			AutoMoveController.update(bodyList, dentyPos);
+			level.update();
+		}
+		float prevPos = enemy.getPosition().x;
+		
+		AutoMoveController.update(bodyList, dentyPos);
+		level.update();
+		
+		Assert.assertTrue(enemy.getPosition().x == prevPos);
+		
+		
+		dentyPos.set(20,20);		// Somewhat close
+		AutoMoveController.update(bodyList, dentyPos);
+		level.update();
+		
+		Assert.assertTrue(enemy.getPosition().x > prevPos);
+		
+	}
+	
+	@Test
+	public void testShooting(){
+		ShootingEnemy enemy = new ShootingEnemy(15, 19, world);
+		level.addDynamicBody(enemy);
+		
+		for(int i=0; i<250; i++){
+			AutoMoveController.update(bodyList, new Vec2(50,50));
+		}
+		level.update();
+		
+		Assert.assertTrue(bodyList.size() == 2);
+		
+	}
+	
+=======
+	
+	@Test
+	public void testPerformMoves(){
+		ArrayList<DynamicBody> testList = new ArrayList<DynamicBody>();
+		testList.add(bouncingEnemy);
+		float startX = bouncingEnemy.getPosition().x;
+		for (int i=0; i<100; i++){
+			AutoMoveController.update(testList, new Vec2(65, 5));
+			level.update();
+		}
+		Assert.assertTrue(bouncingEnemy.getPosition().x > startX);
+	}
+	
+	@Test
+	public void testMoveLeftRight(){
+		Vec2 dummyPos = new Vec2(0, 0);
+		simpleEnemy.setState(StateConstant.MOVING_RIGHT, true);
+		ArrayList<DynamicBody> testList = new ArrayList<DynamicBody>();
+		testList.add(simpleEnemy);
+		float startX = simpleEnemy.getPosition().x;
+		AutoMoveController.update(testList, dummyPos);
+		level.update();
+		Assert.assertTrue(simpleEnemy.getPosition().x > startX);
+	}
+>>>>>>> .r298
+}
